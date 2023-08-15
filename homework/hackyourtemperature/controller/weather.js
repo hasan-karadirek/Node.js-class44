@@ -1,5 +1,7 @@
 import CustomError from '../helpers/CustomError.js';
-const getWeather = (req, res, next) => {
+import keys from '../sources/keys.js'
+const getWeather = async(req, res, next) => {
+  
   const { cityName } = req.body;
 
   if (!cityName) {
@@ -10,10 +12,32 @@ const getWeather = (req, res, next) => {
       )
     );
   }
+try {
+  const response=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&APPID=${keys}`);
+  const data=await response.json()
+  if(!data){
+    return res.status(200).json({
+      success: false,
+      weatherText: "City is not found!",
+    })
+  }
+  
+  
+  const temperature = data.main.temp;
+
   return res.status(200).json({
-    success: false,
-    data: cityName,
+    success: true,
+    weatherText: `The temperature in ${cityName} is:${temperature}!.`,
   });
+  
+} catch (err) {
+  return res.status(400).json({
+    success:false,
+  message:err.message
+})
+  
+}
+  
 };
 
 export default getWeather;
