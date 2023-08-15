@@ -1,4 +1,3 @@
-import CustomError from '../helpers/CustomError.js';
 
 const customErrorHandler = (err, req, res, next) => {
   if (err.status === 400) {
